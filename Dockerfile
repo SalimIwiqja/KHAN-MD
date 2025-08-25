@@ -13,4 +13,4 @@ RUN npm install
 EXPOSE 9090
 
 # Start the bot
-CMD ["node", "start"]
+CMD ["node", "index.js"]
