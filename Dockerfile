@@ -1,7 +1,16 @@
 FROM node:lts-buster
-RUN git clone https://github.com/JawadYT36/KHAN-MD/root/ikJawadx
-WORKDIR /root/ikJawadx
-RUN npm install && npm install -g pm2 || yarn install --network-concurrency 1
+
+# Set working directory
+WORKDIR /app
+
+# Copy all files into container
 COPY . .
+
+# Install dependencies
+RUN npm install
+
+# Expose port if needed (optional)
 EXPOSE 9090
-CMD ["npm", "start"]
+
+# Start the bot
+CMD ["node", "start"]
