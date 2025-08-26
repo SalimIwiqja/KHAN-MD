@@ -47,4 +47,7 @@ sock.ev.on("messages.upsert", async (m) => {
 
         // Simple auto-reply
         if(text === "ping") {
-            await sock.sendMessage(sender, { text: "pong 🏓
+            await sock.sendMessage(sender, { text: "pong 🏓" });
+        }
+    }
+});
