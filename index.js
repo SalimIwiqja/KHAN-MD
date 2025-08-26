@@ -1,18 +1,13 @@
-const { default: makeWASocket, useSingleFileAuthState } = require("@whiskeysockets/baileys");
+const { default: makeWASocket } = require("@whiskeysockets/baileys");
 const express = require("express");
 
 console.log("🚀 Bot starting...");
 
-// Use a single file for storing WhatsApp session
-const { state, saveState } = useSingleFileAuthState("session.json");
-
-// Create the WhatsApp client
+// Create WhatsApp client
 const sock = makeWASocket({
-    auth: state,
     printQRInTerminal: true
 });
 
-// Listen for connection updates
 sock.ev.on("connection.update", (update) => {
     const { connection, lastDisconnect } = update;
     if(connection === "close") {
@@ -22,20 +17,23 @@ sock.ev.on("connection.update", (update) => {
     }
 });
 
-// Listen for incoming messages
+// Listen for new messages
 sock.ev.on("messages.upsert", async (m) => {
-    console.log("📩 New message:", m);
-    // Example auto-reply
     if(m.messages && m.messages[0].message) {
         const message = m.messages[0];
         const sender = message.key.remoteJid;
-        if(message.message.conversation === "ping") {
+        const text = message.message.conversation;
+        
+        console.log(`📩 New message from ${sender}: ${text}`);
+
+        // Simple auto-reply
+        if(text === "ping") {
             await sock.sendMessage(sender, { text: "pong 🏓" });
         }
     }
 });
 
-// Express server so Railway keeps the container alive
+// Express server to keep Railway happy
 const app = express();
 app.get("/", (req, res) => res.send("Bot is running!"));
 app.listen(process.env.PORT || 3000, () => console.log("🌐 Server started"));
