@@ -3,7 +3,7 @@ const express = require("express");
 
 console.log("🚀 Bot starting...");
 
-// Create WhatsApp client
+// Initialize WhatsApp client
 const sock = makeWASocket({
     printQRInTerminal: true
 });
@@ -17,14 +17,14 @@ sock.ev.on("connection.update", (update) => {
     }
 });
 
-// Listen for new messages
+// Listen for messages
 sock.ev.on("messages.upsert", async (m) => {
     if(m.messages && m.messages[0].message) {
         const message = m.messages[0];
         const sender = message.key.remoteJid;
         const text = message.message.conversation;
-        
-        console.log(`📩 New message from ${sender}: ${text}`);
+
+        console.log(`📩 Message from ${sender}: ${text}`);
 
         // Simple auto-reply
         if(text === "ping") {
@@ -33,7 +33,7 @@ sock.ev.on("messages.upsert", async (m) => {
     }
 });
 
-// Express server to keep Railway happy
+// Express server to keep Railway alive
 const app = express();
 app.get("/", (req, res) => res.send("Bot is running!"));
 app.listen(process.env.PORT || 3000, () => console.log("🌐 Server started"));
